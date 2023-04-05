@@ -1,2 +1,2 @@
-# group-calendar
+# Group-Calendar
 Hello World
