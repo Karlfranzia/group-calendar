@@ -3,7 +3,7 @@ const { Event } = require('../../models/');
 const dayjs = require('dayjs')
 
 router.post("/create-event", async(req, res) => {
-    const event = Event(req.body);
+    const event = new Event(req.body);
     await event.save();
     res.sendStatus(201)
 });
