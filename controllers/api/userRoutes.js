@@ -14,16 +14,7 @@ router.get('/', async (req, res) => {
 
 // post route for signing up
 router.post('/', async (req, res) => {
-  try {
-    const validPassword = await userData.checkPassword(req.body.password);
-
-    if (!validPassword) {
-    res
-        .status(400)
-        .json({ message: 'Incorrect email or password, please try again' });
-    return;
-      
-
+  try {     
     const dbUserData = await User.create({
       name: req.body.name,
       email: req.body.email,
@@ -38,7 +29,7 @@ router.post('/', async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
-  }
+   }
 });
 
 router.post('/login', async (req, res) => {
