@@ -12,6 +12,34 @@ router.get('/', async (req, res) => {
     res.json(dishes)
     });
 
+// post route for signing up
+router.post('/', async (req, res) => {
+  try {
+    const validPassword = await userData.checkPassword(req.body.password);
+
+    if (!validPassword) {
+    res
+        .status(400)
+        .json({ message: 'Incorrect email or password, please try again' });
+    return;
+      
+
+    const dbUserData = await User.create({
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+    });
+
+    req.session.save(() => {
+      req.session.loggedIn = true;
+
+      res.status(200).json(dbUserData);
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
+  }
+});
 
 router.post('/login', async (req, res) => {
   try {
@@ -52,26 +80,6 @@ router.post('/logout', (req, res) => {
     });
   } else {
     res.status(404).end();
-  }
-});
-
-// post route for signing up
-router.post('/', async (req, res) => {
-  try {
-    const dbUserData = await User.create({
-      name: req.body.name,
-      email: req.body.email,
-      password: req.body.password,
-    });
-
-    req.session.save(() => {
-      req.session.loggedIn = true;
-
-      res.status(200).json(dbUserData);
-    });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json(err);
   }
 });
 
