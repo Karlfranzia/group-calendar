@@ -42,6 +42,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(routes);
 
+sequelize.query('CREATE DATABASE IF NOT EXISTS user_db;')
+  .then(() => console.log('Database created successfully'))
+  .catch(error => console.error('Error creating database:', error));
+
 sequelize.sync({ force: false }).then(() => {
   app.listen(PORT, () => console.log('Now listening'));
 });
