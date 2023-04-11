@@ -1,18 +1,113 @@
+<!DOCTYPE html>
+<html>
 <head>
     <meta charset='utf-8' />
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@3.10.2/dist/fullcalendar.min.css' rel='stylesheet' />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js'></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.5/index.global.min.js'></script>
-    <script>
-
-      document.addEventListener('DOMContentLoaded', function() {
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-          initialView: 'dayGridMonth'
-        });
-        calendar.render();
-      });
-
-    </script>
-  </head>
-  <body>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <button id="addEventBtn" type="button" class="btn btn-primary">Add Event</button>
     <div id='calendar'></div>
-  </body>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                events: [
+                    
+                ],
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                defaultView: 'month',
+                editable: true,
+                selectable: true,
+                
+            });
+            calendar.render();
+
+            $('#addEventBtn').on('click', function() {
+              $('#myModal').modal('show'); // show the modal
+            });
+
+            // Handle form submission
+            $('#eventForm').on('submit', function(event) {
+                event.preventDefault();
+                var title = $('#eventTitle').val();
+                var startDate = $('#eventStartDate').val();
+                var endDate = $('#eventEndDate').val();
+
+                var eventData = {
+                  title: title,
+                  start: startDate,
+                  end: endDate,
+                };
+                
+                try {
+                  // Call the server-side endpoint to create the event
+                  $.post("/api/events/create-event", eventData); // Wait for the POST request to complete
+                  // If event creation is successful, add the event to the calendar
+                  calendar.addEvent(eventData);
+                } catch (error) {
+                  console.error(error);
+                  alert("Error creating event. Please try again."); // Show error message
+                }
+                // Do something with the form data (e.g., send to server)
+                console.log('Title: ' + title);
+                console.log('Start Date: ' + startDate);
+                console.log('End Date: ' + endDate);
+
+                // Close the modal
+                $('#myModal').modal('hide');
+
+                // Clear the form fields
+                $('#eventTitle').val('');
+                $('#eventStartDate').val('');
+                $('#eventEndDate').val('');
+            });
+        });
+    </script>
+
+    <!-- Modal for event form -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Add Event</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                 <form id="eventForm">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="eventTitle">Title</label>
+                            <input type="text" class="form-control" id="eventTitle" placeholder="Event Title">
+                        </div>
+                        <div class="form-group">
+                            <label for="eventStartDate">Start Date</label>
+                            <input type="datetime-local" class="form-control" id="eventStartDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="eventEndDate">End Date</label>
+                            <input type="datetime-local" class="form-control" id="eventEndDate">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                  </form>
+          </div>
+      </div>
+</div>
+
+</body>
+</html>
+```
