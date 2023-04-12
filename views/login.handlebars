@@ -1,6 +1,15 @@
-<h2>Login</h2>
+<div class="container my-5">
 
-<form class="form login-form">
+<nav>
+
+<div class="nav nav-tabs" id="nav-tab" role="tablist">
+  <button class="nav-link active" id="nav-login-tab" data-bs-toggle="tab" data-bs-target="#nav-login" type="button" role="tab" aria-controls="nav-login" aria-selected="true"><h3>Login</h3></button>
+
+  <button class="nav-link" id="nav-signup-tab" data-bs-toggle="tab" data-bs-target="#nav-signup" type="button" role="tab" aria-controls="nav-signup" aria-selected="true"><h3>Sign up</h3></button>
+</div>
+</nav>
+
+<form class="form login-form tab-pane fade show active p-3" id="nav-login" role="tabpanel" aria-labelledbv="nav-login-tab">
   <div class="form-group">
     <label for="email-login">email:</label>
     <input class="form-input" type="text" id="email-login" />
@@ -14,9 +23,9 @@
   </div>
 </form>
 
-<h2>Sign up</h2>
 
-<form class="form signup-form">
+
+<form class="form signup-form tab-pane fade show active p-3" id="nav-signup" role="tabpanel" aria-labelledbv="nav-signup-tab">
   <div class="form-group">
     <label for="name-signup">name:</label>
     <input class="form-input" type="text" id="name-signup" />
@@ -33,5 +42,8 @@
     <button class="btn btn-primary" type="submit">signup</button>
   </div>
 </form>
+
+
+</div>
 
 <script src="/js/login.js"></script>
