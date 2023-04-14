@@ -1,0 +1,155 @@
+body {
+    background-color: #f6f8f8 !important;
+}
+
+header.p-2 {
+    justify-content: center;
+}
+
+#app-title {
+    margin-top: 10vh;
+    margin-bottom: 7vh;
+    font-style: italic;
+
+    position: relative;
+    color: #080808;
+    -webkit-transition: all 0.4s ease 0s;
+    -o-transition: all 0.4s ease 0s;
+    transition: all 0.4s ease 0s;
+    text-align: center;
+    font-weight: 700; color:#202020;
+    word-spacing: 1px; letter-spacing:2px;
+
+}
+
+  #app-title:before {
+    position: absolute;
+    left: 0;
+    bottom: -15px;
+    width: 100px;
+    height: 4px;
+    content: "";
+    left: 50%;
+    margin-left: -52px;
+    background-color: #0d6efd;
+  }
+
+  #app-title em {
+    
+    font-style: normal;
+    font-weight: 600;
+  }
+
+#nav-container {
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 20px;
+    margin-bottom: 20px;
+
+}
+
+
+.btn,
+.fc-button, .fc-button-primary,
+.fc-today-button {
+    background: linear-gradient(to bottom right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1));
+    background-color: #1c75bc;
+    font-size: 14pt;
+}
+
+.btn.btn-primary, #logout,
+.fc-button, .fc-button-primary,
+.fc-today-button {
+    color: white;
+}
+
+a {
+    text-decoration: none;
+    font-weight:bold;    
+}
+
+form#nav-login,
+form#nav-signup {
+    border:1px solid;
+    border-top: 0;
+    background-color: white;
+    border-color: #6699cc;
+    border-radius: 0 0 0.5rem 0.5rem;
+    box-shadow: 0 0.5px 7px 0 #abcced;
+}
+
+.nav-tabs .nav-item.show .nav-link,
+.nav-tabs .nav-link.active {
+    border-bottom: 0;
+    border-color: #6699cc;
+}
+
+a:hover {
+    text-decoration: none;
+cursor: pointer;
+color: #2A6BBF;
+}
+
+.btn-primary {
+    background-color: #2d708c;
+}
+
+.fc-icon-chevron-left,
+.fc-icon-chevron-right,
+.fc-today-button {
+    margin-bottom: 2px;
+}
+
+
+#nav-signup-tab,
+#nav-login-tab {
+    color: #d9d9d9;
+}
+
+a[aria-selected="true"] h3{
+    color: #0d6efd;
+  }
+
+.active,
+#nav-signup-tab:hover,
+#nav-login-tab:hover {
+background-color: white;
+color: #080808;
+}
+
+form.tab-pane {
+    border-color: #6699cc;
+}
+
+
+.fc-event, .fc-event-dot,
+.fc-daygrid-dot-event {
+    background-color: #6a11cb;
+}
+
+.fc-scrollgrid, .fc-scrollgrid-liquid {
+    background-color: white;
+    border-radius: 0.375rem;
+    border-color: #6699cc;
+    box-shadow: 0 0.5px 7px 0 #abcced;
+
+}
+
+.fc-event, .fc-event-dot {
+    background-color: #0846a1 !important;
+}
+.fc-daygrid-event-dot {
+    border: calc(var(--fc-daygrid-event-dot-width)/2) solid #00FF00;
+}
+
+.fc-direction-ltr .fc-button-group>.fc-button:not(:last-child) {
+    margin-right: 4px;
+    border-bottom-right-radius: 0.25em;
+    border-top-right-radius: 0.25em;
+}
+
+.fc-direction-ltr .fc-button-group>.fc-button:not(:first-child) {
+    border-bottom-left-radius: 0.25em;
+    border-top-left-radius: 0.25em;
+}

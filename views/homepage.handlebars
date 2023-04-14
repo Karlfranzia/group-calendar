@@ -10,7 +10,12 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
+    <div id="nav-container">
     <button id="addEventBtn" type="button" class="btn btn-primary">Add Event</button>
+        {{#if logged_in}}
+        <button class="btn" id="logout">logout</button>
+    {{/if}}
+    </div>
     <div id='calendar'></div>
 
     <script>
