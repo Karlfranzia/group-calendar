@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const { Event } = require('../../models/');
 const dayjs = require('dayjs')
+const { Op } = require('sequelize');
 
 
 router.post("/create-event", async(req, res) => {
@@ -21,6 +22,8 @@ router.get("/get-events", async (req, res) => {
         //     }
         // }
         });
+        
+        const events = await Event.findAll();
         res.json(events);
     } catch (err) {
         console.error(err);
