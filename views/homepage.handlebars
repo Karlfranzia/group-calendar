@@ -34,6 +34,46 @@
                 defaultView: 'month',
                 editable: true,
                 selectable: true,
+                
+                // show modal with event info when event is clicked
+                eventClick: function(clickedEventInfo) {
+                    console.log(clickedEventInfo);
+                    // render modal with event info
+                    $('#modalTitle').text(clickedEventInfo.event._def.title);
+                    $('#modalStart').text('Start Date/Time: ' + clickedEventInfo.event.start);
+                    $('#modalEnd').text('End Date/Time: ' + clickedEventInfo.event.end);
+                    // console.log(clickedEventInfo.event.id);
+                    
+                    // display modal
+                    $('#eventModal').modal('show');
+
+                    // Handle event deletion
+                    $('#deleteEventBtn').on('click', function() {
+                        const deletedId = clickedEventInfo.event.id;
+                        try {
+                            // delete request
+                            $.ajax({
+                                url: "/api/events/delete/" + deletedId,
+                                type: "DELETE",
+                                success: function(result) {
+                                    console.log(result);
+                                },
+                                error: function(error) {
+                                    console.error(error);
+                                    alert("Error deleting event. Please try again."); // Show error message
+                                }
+                            });
+                        } catch (error) {
+                            console.error(error);
+                            alert("Error deleting event. Please try again."); // Show error message
+                        }
+                        const deletedEvent = calendar.getEventById(deletedId);
+                        if (deletedEvent) {
+                            deletedEvent.remove();
+                        }
+                        $('#eventModal').modal('hide');
+                    })
+                }     
 
             });
             calendar.render();
@@ -57,10 +97,36 @@
                 console.log(eventData);
 
                 try {
-                    // Call the server-side endpoint to create the event
-                    $.post("/api/events/create-event", eventData); // Wait for the POST request to complete
-                    // If event creation is successful, add the event to the calendar
-                    calendar.addEvent(eventData);
+
+                  // Call the server-side endpoint to create the event
+                  $.post("/api/events/create-event", eventData); // Wait for the POST request to complete
+                  // If event creation is successful, add the event to the calendar
+
+                  $.get("/api/events/get-events", function(data) {
+                    // if event is not already on the calendar, add it to the calendar
+                    // getEventById
+                    // console.log(data);
+                    $(data).each(function() {
+                        // create an event object from the current event data
+                        var thisData = {
+                            id: this.id,
+                            title: this.title,
+                            start: this.start,
+                            end: this.end,
+                        };
+                        // console.log(thisData);
+
+                        var existingEvent = calendar.getEventById(thisData.id);
+                        // console.log(existingEvent);
+                        
+                        // if event does not exist, add event to calendar
+                        if (!existingEvent) {
+                            calendar.addEvent(thisData);
+                        }
+                    });
+                  }, 'json');
+                  // calendar.addEvent(eventData);
+
                 } catch (error) {
                     console.error(error);
                     alert("Error creating event. Please try again."); // Show error message
@@ -136,7 +202,30 @@
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Save</button>
                     </div>
-                </form>
+                  </form>
+          </div>
+      </div>
+    </div>
+
+    {{!-- JY: modal for clicked event --}}
+    <div class="modal" id="eventModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Event Title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="modalStart"></p>
+                <p id="modalEnd"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="deleteEventBtn">Delete event</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+            
             </div>
         </div>
     </div>
