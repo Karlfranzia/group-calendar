@@ -22,8 +22,6 @@ router.get("/get-events", async (req, res) => {
         //     }
         // }
         });
-        
-        const events = await Event.findAll();
         res.json(events);
     } catch (err) {
         console.error(err);
