@@ -11,9 +11,6 @@ router.post("/create-event", async(req, res) => {
 
 router.get("/get-events", async (req, res) => {
     try{
-        console.log("hello world")
-        console.log(dayjs(req.query.start).toDate())
-        console.log(dayjs(req.query.end).toDate())
         const events = await Event.findAll({
         where: {
             start: {
@@ -24,7 +21,8 @@ router.get("/get-events", async (req, res) => {
             }
         }
         });
-        console.log(events);
+        
+        const events = await Event.findAll();
         res.json(events);
     } catch (err) {
         console.error(err);
