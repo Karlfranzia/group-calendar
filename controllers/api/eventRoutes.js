@@ -12,18 +12,8 @@ router.post("/create-event", async(req, res) => {
 
 router.get("/get-events", async (req, res) => {
     try{
-        const events = await Event.findAll({
-        // where: {
-        //     start: {
-        //         [Op.gte]: dayjs(req.query.start).toDate()
-        //     },
-        //     end: {
-        //         [Op.lte]: dayjs(req.query.end).toDate()
-        //     }
-        // }
-        });
-        
         const events = await Event.findAll();
+        
         res.json(events);
     } catch (err) {
         console.error(err);
