@@ -1,5 +1,5 @@
 # Group-Calendar
-Cos
+This is a calendar app that allows you and your friends/work colleagues to arrange together your meetings & events
 
 ## User Story
 
@@ -31,15 +31,6 @@ THEN I can see our events data again with no any issues
 ## Way to use it:
 Sign-up and log-in with your group and add your events schedule so every group member can access to it, view and keep tracking for important events
 
-## Mock-up
- Group-Calendar App webpage URL:
-
-[Live Link of Deployed Application](https://)
-
-The following image demonstraites how Group-Calendar app looks once the user navigates to the live page.
-
-![A preview of Group-Calendar](./assets/images/preview.png)
-
 ## Collaborators
 
 Click below to see more work from our collaborators!
@@ -51,3 +42,14 @@ Click below to see more work from our collaborators!
 [Bryan Buechler](https://github.com/Bryan-Codes)
 
 [Alaa Kouki](https://github.com/alaakouki)
+
+## Mock-up
+ Group-Calendar App webpage URL:
+
+[Live Link of Deployed Application](https://)
+
+The following image demonstraites how Group-Calendar app looks once the user navigates to the live page, calendar events and event details
+
+![Login-signup form](./assets/images/login-signup%20form.png)
+![Calendar events](./assets/images/events.png)
+![Event details](./assets/images/event%20details.png)
