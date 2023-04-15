@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset='utf-8' />
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@3.10.2/dist/fullcalendar.min.css' rel='stylesheet' />
@@ -9,6 +10,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
+
 <body>
     <div id="nav-container">
     <button id="addEventBtn" type="button" class="btn btn-primary">Add Event</button>
@@ -19,12 +21,16 @@
     <div id='calendar'></div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
-                events: [
-                    
-                ],
+                events: function (info, successCallback, failureCallback) {
+                    fetchEvents().then(function (events) {
+                        successCallback(events);
+                    }).catch(function (error) {
+                        failureCallback(error);
+                    });
+                },
                 header: {
                     left: 'prev,next today',
                     center: 'title',
@@ -34,34 +40,101 @@
                 editable: true,
                 selectable: true,
                 
+                // show modal with event info when event is clicked
+                eventClick: function(clickedEventInfo) {
+                    console.log(clickedEventInfo);
+                    // render modal with event info
+                    $('#modalTitle').text(clickedEventInfo.event._def.title);
+                    $('#modalStart').text('Start Date/Time: ' + clickedEventInfo.event.start);
+                    $('#modalEnd').text('End Date/Time: ' + clickedEventInfo.event.end);
+                    // console.log(clickedEventInfo.event.id);
+                    
+                    // display modal
+                    $('#eventModal').modal('show');
+
+                    // Handle event deletion
+                    $('#deleteEventBtn').on('click', function() {
+                        const deletedId = clickedEventInfo.event.id;
+                        try {
+                            // delete request
+                            $.ajax({
+                                url: "/api/events/delete/" + deletedId,
+                                type: "DELETE",
+                                success: function(result) {
+                                    console.log(result);
+                                },
+                                error: function(error) {
+                                    console.error(error);
+                                    alert("Error deleting event. Please try again."); // Show error message
+                                }
+                            });
+                        } catch (error) {
+                            console.error(error);
+                            alert("Error deleting event. Please try again."); // Show error message
+                        }
+                        const deletedEvent = calendar.getEventById(deletedId);
+                        if (deletedEvent) {
+                            deletedEvent.remove();
+                        }
+                        $('#eventModal').modal('hide');
+                    })
+                }     
+
             });
             calendar.render();
 
-            $('#addEventBtn').on('click', function() {
-              $('#myModal').modal('show'); // show the modal
+            $('#addEventBtn').on('click', function () {
+                $('#myModal').modal('show'); // show the modal
             });
 
             // Handle form submission
-            $('#eventForm').on('submit', function(event) {
+            $('#eventForm').on('submit', function (event) {
                 event.preventDefault();
                 var title = $('#eventTitle').val();
                 var startDate = $('#eventStartDate').val();
                 var endDate = $('#eventEndDate').val();
 
                 var eventData = {
-                  title: title,
-                  start: startDate,
-                  end: endDate,
+                    title: title,
+                    start: startDate,
+                    end: endDate,
                 };
-                
+                console.log(eventData);
+
                 try {
+
                   // Call the server-side endpoint to create the event
                   $.post("/api/events/create-event", eventData); // Wait for the POST request to complete
                   // If event creation is successful, add the event to the calendar
-                  calendar.addEvent(eventData);
+
+                  $.get("/api/events/get-events", function(data) {
+                    // if event is not already on the calendar, add it to the calendar
+                    // getEventById
+                    // console.log(data);
+                    $(data).each(function() {
+                        // create an event object from the current event data
+                        var thisData = {
+                            id: this.id,
+                            title: this.title,
+                            start: this.start,
+                            end: this.end,
+                        };
+                        // console.log(thisData);
+
+                        var existingEvent = calendar.getEventById(thisData.id);
+                        // console.log(existingEvent);
+                        
+                        // if event does not exist, add event to calendar
+                        if (!existingEvent) {
+                            calendar.addEvent(thisData);
+                        }
+                    });
+                  }, 'json');
+                  // calendar.addEvent(eventData);
+
                 } catch (error) {
-                  console.error(error);
-                  alert("Error creating event. Please try again."); // Show error message
+                    console.error(error);
+                    alert("Error creating event. Please try again."); // Show error message
                 }
                 // Do something with the form data (e.g., send to server)
                 console.log('Title: ' + title);
@@ -77,6 +150,32 @@
                 $('#eventEndDate').val('');
             });
         });
+        function fetchEvents() {
+            return fetch('/api/events/get-events?start=2022-01-01&end=2023-12-30')
+                .then(function (response) {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Network response was not ok');
+                    }
+                })
+                .then(function (data) {
+                    console.log(data)
+                    return data.map(function (event) {
+                        return {
+                            id: event.id,
+                            title: event.title,
+                            start: event.start,
+                            end: event.end
+                        };
+                    });
+                })
+                .catch(function (error) {
+                    console.error('There was a problem with the fetch operation:', error);
+                    alert('There was a problem retrieving event data. Please try again.');
+                });
+        }
+
     </script>
 
     <!-- Modal for event form -->
@@ -89,7 +188,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                 <form id="eventForm">
+                <form id="eventForm">
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="eventTitle">Title</label>
@@ -105,14 +204,37 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                      <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
                     </div>
                   </form>
           </div>
       </div>
-</div>
+    </div>
+
+    {{!-- JY: modal for clicked event --}}
+    <div class="modal" id="eventModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Event Title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="modalStart"></p>
+                <p id="modalEnd"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="deleteEventBtn">Delete event</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+            
+            </div>
+        </div>
+    </div>
 
 </body>
+
 </html>
-```
