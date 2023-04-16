@@ -46,7 +46,7 @@ Click below to see more work from our collaborators!
 ## Mock-up
  Group-Calendar App webpage URL:
 
-[Live Link of Deployed Application](https://)
+[Live Link of Deployed Application](https://group-calendar.herokuapp.com/login)
 
 The following image demonstraites how Group-Calendar app looks once the user navigates to the live page, calendar events and event details
 
